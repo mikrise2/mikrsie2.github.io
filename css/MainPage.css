@@ -1,0 +1,54 @@
+.box {
+    display: flex;
+}
+
+.map {
+    border: 2px solid black;
+    width: 40%;
+    aspect-ratio: 1 / 1;
+    height: 100%;
+}
+
+.info {
+    display: flex;
+    flex-flow: column;
+    flex: auto;
+    align-items: center;
+    text-align: center;
+}
+
+.btn {
+    margin-top: 15px;
+    font-weight: bold;
+    font-size: 100%;
+    width: 50%;
+    min-height: 35px;
+    background-color: white;
+}
+
+.btn:active {
+    box-shadow: none;
+}
+
+.btn:hover {
+    color: #a19f9f;
+    background-color: #252323;
+    box-shadow: rgba(17, 16, 16, 0.25) 0 8px 15px;
+}
+
+.btn:disabled {
+    pointer-events: none;
+}
+
+.logs {
+    margin-top: 20px;
+    text-align: center;
+    border: 1px solid black;
+    width: 100%
+}
+
+a {
+    font-weight: bold;
+    font-size: 30px;
+    margin-top: 20px;
+}
