@@ -1,7 +1,51 @@
-# "BugWorld" project
+# Bug World
 
-This project is an implementation of the first BugWorld sprint and uses the following technologies: JavaScript, HTML, CSS, and jQuery. The application is a single-page application where the HTML content changes dynamically based on user actions. The main interaction logic is stored in the index.js file.
+## Documentation
+See [documentation.pdf](documentation.pdf), or there is also a [google doc](https://docs.google.com/document/d/19n0cQuqEHVvUfA2rgeqVhTHb2IRH9WHFlCa5z8fUm64/edit?usp=sharing) if you need sources.
 
-## Application functionality
 
-The application allows setting BugWorld parameters and starting the game. To use the application correctly, it is necessary to load all the required files and enter all the necessary data. The correctness of the input is checked to ensure proper functioning of the application. Additionally, interfaces have been added for the Game Logic diagram. Switching between pages works exactly as stated in the documentation.
+## 1 Sprint Progress
+
+Project configuration:
+- Fixed specification ([documentation.pdf](documentation.pdf))
+- Set up project (git repo, class structuring)
+- Set web interface for testing
+- Configured [ESLint](https://eslint.org/), to keep consistent code style effortlessly
+- Convenient functions for assertions (`assert`, `assertFails`, `test`)
+- Lots of assertions for preconditions (especially for types) in functions, to discover bugs as early as possible
+
+Game Logic:
+- Bug implementation:
+  - turn left/right
+  - logging
+- Enums implementation
+  - Cell Conditions
+  - Colors with .opposite() method
+- World Cell implementation
+  - marking logic
+  - logging
+  - getters/setters
+- GUI class
+  - getters and setters, according to specification
+
+UI:
+- Made up all the project pages: Welcome, Setup, Game, Options, Quit, Restart pages
+- Connected all pages
+- Added uploading forms for Setup and Options pages and handlers for uploaded files
+
+Tests:
+- Covered every class and every method with unit tests
+- Integration tests between Bugs and Cells
+
+
+## 2 Sprint Progress
+- Map file parser
+- Assembler file parser
+- Tests for parsers
+- Changed to Single Window Application
+- Stylesheets
+- Enums for Directions
+- Classes for instructions
+- Input checking
+
+new link - [Link to application](https://mikrsie2.github.io/)

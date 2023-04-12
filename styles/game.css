@@ -1,0 +1,74 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #333;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.text {
+    font-size: 4rem;
+    margin-bottom: 2rem;
+    text-shadow: 1px 1px 1px #000;
+}
+
+.button {
+    border: none;
+    border-radius: 5px;
+    font-size: 1.5rem;
+    padding: 1rem 2rem;
+    margin: 1rem;
+    cursor: pointer;
+    box-shadow: 0 0 5px 1px #000;
+    transition: transform 0.2s ease-in-out;
+    text-transform: uppercase;
+}
+
+#playButton {
+    background-color: #00b300;
+    color: white;
+}
+
+#optionsButton {
+    background-color: #004080;
+    color: white;
+}
+
+#quitButton {
+    background-color: #800000;
+    color: white;
+}
+
+.button:hover {
+    transform: scale(1.1);
+}
+
+.box {
+    display: flex;
+}
+
+.map {
+    margin-left: 10px;
+    margin-top: 10px;
+    width: 45%;
+    border: 2px solid black;
+    aspect-ratio: 1/1;
+    height: 100%;
+    background: rgba(20, 54, 10, 0.17);
+}
+
+.info {
+    display: flex;
+    flex-flow: column;
+    flex: auto;
+    align-items: center;
+    text-align: center;
+}

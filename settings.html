@@ -1,0 +1,27 @@
+<p class="title">Bug World</p>
+<div class="container">
+    <form action="" method="" class="">
+        <div class="upload">
+            <label for="world_map_file">Please upload a world map file:</label>
+            <input type="file" id="world_map_file" name="world_map_file" accept=".txt">
+        </div>
+        <div class="upload">
+            <label for="bug_assembler_file_1">Please upload a bug assembler source code file #1:</label>
+            <input type="file" id="bug_assembler_file_1" name="bug_assembler_file_1" accept=".txt">
+        </div>
+        <div class="upload">
+            <label for="bug_assembler_file_2">Please upload a bug assembler source code file #2:</label>
+            <input type="file" id="bug_assembler_file_2" name="bug_assembler_file_2" accept=".txt">
+        </div>
+
+        <div class="upload">
+            <label for="iterations">Please select the number of iterations:</label>
+            <input type="number" id="iterations" name="iterations" min="1" max="10000">
+        </div>
+        <div class="upload">
+            <label for="log_enabling">Do you want to log the results of the session?</label>
+            <input type="checkbox" id="log_enabling" name="scales" checked>
+        </div>
+    </form>
+    <button id="gameButton" onclick="validate_settings()">Next</button>
+</div>
