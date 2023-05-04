@@ -1,0 +1,6 @@
+move 1 0 ; [0] 
+mark 0 2 ; [1]
+unmark 0 3 ; [2]
+pickup 3 4 ; [3]
+drop 5 ; [4]
+turn left 0 ; [5]

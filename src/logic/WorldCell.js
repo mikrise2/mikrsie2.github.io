@@ -1,128 +1,255 @@
-import { assert } from '../utils/Assertion.js';
-import { Color, CellCondition } from './Enums.js';
-import Bug from './Bug.js';
+import {Team} from './core.js'
 
-export default class WorldCell {
-  constructor(obstructed = false, food = 0, baseColor = null) {
-    this.obstructed = obstructed; // immutable
-    this.food = food;
-    this.baseColor = baseColor; // immutable
-    this.redMarkers = [false, false, false, false, false, false];
-    this.blackMarkers = [false, false, false, false, false, false];
-    this.bug = null;
-
-    Object.seal(this);
-  }
-
-  isObstructed() {
-    return this.obstructed;
-  }
-
-  isOccupied() {
-    return this.bug !== null;
-  }
-
-  setBug(newBug) {
-    assert(newBug instanceof Bug, 'setBug takes Bug instances as input');
-    if (this.isOccupied()) {
-      return false;
+class Marker {
+    /**
+     *
+     * @param {Team} team
+     * @param index
+     */
+    constructor(team, index) {
+        this.team = team;
+        this.index = index;
     }
-    this.bug = newBug;
-    return true;
-  }
 
-  getBug() {
-    return this.bug;
-  }
-
-  removeBug() {
-    if (this.bug === null) {
-      return false;
+    /**
+     *
+     * @returns {Team}
+     */
+    getTeam() {
+        return this.team;
     }
-    this.bug = null;
-    return true;
-  }
 
-  setFood(newFood) {
-    assert(typeof newFood === 'number', 'Food must be a number');
-    this.food = newFood;
-  }
-
-  setMarker(color, markerPos) {
-    assert(color instanceof Color, 'setMarker: First argument must be Color');
-    assert(typeof markerPos === 'number', 'setMarker: Second argument must be Number');
-    assert(markerPos >= 0 && markerPos < 6, 'setMarker: Marker position not in 0..5');
-    if (color === Color.Red) {
-      this.redMarkers[markerPos] = true;
+    /**
+     *
+     * @returns {*}
+     */
+    getIndex() {
+        return this.index;
     }
-    if (color === Color.Black) {
-      this.blackMarkers[markerPos] = true;
-    }
-  }
-
-  clearMarker(color, markerPos) {
-    assert(color instanceof Color, 'clearMarker: First argument must be Color');
-    assert(typeof markerPos === 'number', 'clearMarker: Second argument must be Number');
-    assert(markerPos >= 0 && markerPos < 6, 'clearMarker: Marker position not in 0..5');
-    if (color === Color.Red) {
-      this.redMarkers[markerPos] = false;
-    }
-    if (color === Color.Black) {
-      this.blackMarkers[markerPos] = false;
-    }
-  }
-
-  isFriendlyMarker(color, markerPos) {
-    assert(color instanceof Color, 'isFriendlyMarker: First argument must be Color');
-    assert(typeof markerPos === 'number', 'isFriendlyMarker: Second argument must be Number');
-    assert(markerPos >= 0 && markerPos < 6, 'isFriendlyMarker: Marker position not in 0..5');
-    if (color === Color.Red) {
-      return this.redMarkers[markerPos];
-    }
-    return this.blackMarkers[markerPos];
-  }
-
-  isEnemyMarker(color) {
-    assert(color instanceof Color, 'isEnemyMarker: First argument must be Color');
-    if (color === Color.Black) {
-      return this.redMarkers.some((x) => x === true);
-    }
-    return this.blackMarkers.some((x) => x === true);
-  }
-
-  cellMatches(cellCondition, color) {
-    assert(cellCondition instanceof CellCondition, 'cellMatches: First argument must be Condition');
-    assert(color instanceof Color, 'cellMatches: Second argument must be Color');
-    switch (cellCondition.name) {
-      case 'friend':
-        return this.isOccupied() && this.getBug().color === color;
-      case 'foe':
-        return this.isOccupied() && this.getBug().color === color.opposite();
-      case 'friend-with-food':
-        return this.isOccupied() && this.getBug().color === color && this.bug.hasFood;
-      case 'food':
-        return this.food !== 0;
-      case 'rock':
-        return this.isObstructed();
-      case 'marker':
-        return this.isFriendlyMarker(color, cellCondition.pos);
-      case 'foe-marker':
-        return this.isEnemyMarker(color);
-      case 'home':
-        return this.baseColor === color;
-      default:
-        assert(cellCondition.name === 'foe-home', `Unknown condition ${cellCondition.name}`);
-        return this.baseColor === color.opposite();
-    }
-  }
-
-  toString() {
-    return `Cell:\n
-            \tIs obstructed: ${this.isObstructed()}.\n
-            \tBase of color: ${this.baseColor}.\`
-            \tAmount of food:${this.food}.\n
-            \tContains bug: ${this.isOccupied()} ${this.bug.toString()}.\n
-            \tRed markers are: ${this.redMarkers.toString()}.\n
-            \tBlack markers are: ${this.blackMarkers.toString()}.\n`
-  }
 }
+
+export class WorldCell {
+
+    /**
+     *
+     * @type {boolean}
+     */
+    static #isInternalConstructing = false;
+
+    /**
+     * 
+     * @param {Boolean} isObstacle True if WorldCell is obstacle
+     * @param {Boolean} isNest True if WorldCell is Nest
+     * @param {Team} nestTeam Team enum
+     * @param {Number} numFood Number of food 1..9
+     */
+    constructor(isObstacle, isNest, nestTeam, numFood) {
+        if (!WorldCell.#isInternalConstructing) {
+            throw new TypeError("WorldCell should only be constructed via static constructors");
+        }
+        this.isObstacle = isObstacle;
+        this.isNest = isNest;
+        this.nestTeam = nestTeam;
+        this.numFood = numFood;
+
+        this.bug = null;
+        this.marker = null;
+        this.base = null;
+    }
+
+    /**
+     *
+     * @returns {WorldCell}
+     */
+    static createObstacle() {
+        WorldCell.#isInternalConstructing = true;
+        const instance = new WorldCell(true, false, Team.None, 0);
+        WorldCell.#isInternalConstructing = false;
+        return instance;
+    }
+
+    /**
+     * 
+     * @param {Team} team 
+     * @returns instance of WorldCell
+     */
+    static createNest(team) {
+        WorldCell.#isInternalConstructing = true;
+        const instance = new WorldCell(false, true, team, 0);
+        WorldCell.#isInternalConstructing = false;
+        return instance;
+    }
+
+    /**
+     *
+     * @returns {WorldCell}
+     */
+    static createEmpty() {
+        WorldCell.#isInternalConstructing = true;
+        const instance = new WorldCell(false, false, Team.None, 0);
+        WorldCell.#isInternalConstructing = false;
+        return instance;
+    }
+
+    /**
+     * 
+     * @param {Number} numFood 
+     * @returns 
+     */
+    static createFood(numFood) {
+        WorldCell.#isInternalConstructing = true;
+        const instance = new WorldCell(false, false, Team.None, numFood);
+        WorldCell.#isInternalConstructing = false;
+        return instance;
+    }
+
+    /**
+     * 
+     * @returns {Team}
+     */
+    getTeam() {
+        return this.nestTeam;
+    }
+
+    /**
+     * 
+     * @returns {Boolean}
+     */
+    isObstructed() {
+        return this.isObstacle;
+    }
+
+    /**
+     * 
+     * @returns {Boolean}
+     */
+    isOccupied() {
+        return !this.isObstacle && this.bug !== null;
+    }
+
+    /**
+     * 
+     * @returns {Boolean}
+     */
+    setBug(bug) {
+        this.bug = bug;
+        return true;
+    }
+
+    /**
+     * 
+     * @returns {Bug}
+     */
+    getBug() {
+        return this.bug;
+    }
+
+    /**
+     * 
+     * @returns {Boolean}
+     */
+    removeBug() {
+        if (this.isObstructed()) {
+            return false;
+        }
+        this.bug = null;
+        return true;
+    }
+
+    /**
+     *
+     * @returns {Boolean}
+     */
+    decreaseFood() {
+        this.numFood--;
+    }
+
+    /**
+     *
+     * @returns {Boolean}
+     */
+    increaseFood() {
+        this.numFood++;
+    }
+
+    /**
+     * 
+     * @returns {Number}
+     */
+    getFood() {
+        return this.numFood;
+    }
+
+    /**
+     * 
+     * @param {Team} color 
+     * @returns {Boolean}
+     */
+    isFriendlyBase(color) {
+        return this.isNest && this.nestTeam === color;
+    }
+
+    /**
+     * 
+     * @param {Team} color 
+     * @returns {Boolean}
+     */
+    isEnemyBase(color) {
+        return this.isNest && this.nestTeam !== color;
+    }
+
+    /**
+     *
+     * @param {Team} color
+     * @param i marker number
+     */
+    setMarker(color, i) {
+        this.marker = new Marker(color, i)
+    }
+
+    getMarker() {
+        return this.marker;
+    }
+
+    clearMarker() {
+        this.marker = null;
+    }
+
+    /**
+     * 
+     * @param {Team} color 
+     * @returns {Boolean}
+     */
+    isFriendlyMarker(color) {
+        if (!this.marker) {
+            throw new Error("No marker here");
+        }
+        return this.marker.getTeam() === color;
+    }
+
+    /**
+     * 
+     * @param {Team} color 
+     * @returns {Boolean}
+     */
+    isEnemyMarker(color) {
+        return this.marker.getTeam() !== color;
+    }
+
+    toString() {
+        // TODO()
+    }
+}
+
+/**
+ *
+ * @param other
+ * @returns {boolean}
+ */
+WorldCell.prototype.equals = function (other) {
+    return this.isNest === other.isNest &&
+        this.isObstacle === other.isObstacle &&
+        this.nestTeam === other.nestTeam &&
+        this.numFood === other.numFood
+}
+

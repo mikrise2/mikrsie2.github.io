@@ -1,51 +1,25 @@
-# Bug World
+# pair23_sprint3
 
-## Documentation
-See [documentation.pdf](documentation.pdf), or there is also a [google doc](https://docs.google.com/document/d/19n0cQuqEHVvUfA2rgeqVhTHb2IRH9WHFlCa5z8fUm64/edit?usp=sharing) if you need sources.
+# Team
+- Daniil Karol
+- Nikita Ivlev
+# Features
+1. Bug brain and map validation
+2. Instruction and map parsing
+3. World model
+4. Simulation working (with Ticks)
+5. All instructions implemented
+6. Tests
+7. UI
+# Improvements
 
+1. Tests
+2. Added JSdoc for all functions and classes
+3. Added map rendering
+4. Correct validation
+5. Single window application 
+6. 6.Changed styles
+# Tests
+You can run tests with `npm test`, or you can simply access the results at 'Actions' tab on github.
 
-## 1 Sprint Progress
-
-Project configuration:
-- Fixed specification ([documentation.pdf](documentation.pdf))
-- Set up project (git repo, class structuring)
-- Set web interface for testing
-- Configured [ESLint](https://eslint.org/), to keep consistent code style effortlessly
-- Convenient functions for assertions (`assert`, `assertFails`, `test`)
-- Lots of assertions for preconditions (especially for types) in functions, to discover bugs as early as possible
-
-Game Logic:
-- Bug implementation:
-  - turn left/right
-  - logging
-- Enums implementation
-  - Cell Conditions
-  - Colors with .opposite() method
-- World Cell implementation
-  - marking logic
-  - logging
-  - getters/setters
-- GUI class
-  - getters and setters, according to specification
-
-UI:
-- Made up all the project pages: Welcome, Setup, Game, Options, Quit, Restart pages
-- Connected all pages
-- Added uploading forms for Setup and Options pages and handlers for uploaded files
-
-Tests:
-- Covered every class and every method with unit tests
-- Integration tests between Bugs and Cells
-
-
-## 2 Sprint Progress
-- Map file parser
-- Assembler file parser
-- Tests for parsers
-- Changed to Single Window Application
-- Stylesheets
-- Enums for Directions
-- Classes for instructions
-- Input checking
-
-new link - [Link to application](https://mikrsie2.github.io/)
+# Deploy

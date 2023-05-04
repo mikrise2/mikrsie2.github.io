@@ -1,48 +1,129 @@
-import { assert } from '../utils/Assertion.js';
-import { Color } from './Enums.js';
+const { Instruction } = require('./instruction');
+const { directions, Team } = require('./core');
 
-/**
- Attributes:
- color: Color
-    Team color of the bug.
- resting: Number
-    Number of cycles
- direction = 0: Number
-    Int from 0 to 5, as described in specification.
- hasFood = false: Boolean
-    Whether the bug carries a piece of food.
- instructionPos = 0: Number
-    Bug's brain is a finite automaton and this is the index of state in it.
- */
-const RESTING_LIMIT = 14;
-export default class Bug {
-  constructor(color) {
-    assert(color instanceof Color, 'Bug constructor failed: color');
+class Bug {
+    /**
+     * 
+     * @param {Number} x 
+     * @param {Number} y 
+     * @param {Team} team
+     */
+    constructor(x, y, team) {
+        this.x = x;
+        this.y = y;
+        this.team = team;
+        this.dir = 0;
+        this.currentInstruction = 0;
+        this.carryingFood = false;
+    }
 
-    this.color = color;
-    this.resting = RESTING_LIMIT;
-    this.direction = 0;
-    this.hasFood = false;
-    this.instructionPos = 0;
-  }
+    /**
+     * 
+     * @returns {Instruction}
+     */
+    getCurrentInstruction() {
+        return this.currentInstruction;
+    }
 
-  /** direction = (direction - 1) mod 6 */
-  turnLeft() {
-    this.direction += 5;
-    this.direction %= 6;
-  }
+    /**
+     * 
+     * @param {Number} i 
+     */
+    setInstruction(i) {
+        this.currentInstruction = i;
+    }
 
-  /** direction = (direction + 1) mod 6 */
-  turnRight() {
-    this.direction += 1;
-    this.direction %= 6;
-  }
+    pickupFood() {
+        if (this.carryingFood) {
+            throw new Error("Can not pick food up");
+        }
 
-  toString() {
-    return `Bug of color ${this.color}.\n
-        \tDirection: ${this.direction}, \n
-        \tHasFood: ${this.hasFood}, \n
-        \tResting: ${this.resting}, \n
-        \tInstructions position: ${this.instructionPos}.\n`;
-  }
+        this.carryingFood = true;
+    }
+
+    dropFood() {
+        if (!this.carryingFood) {
+            throw new Error("No food to drop");
+        }
+
+        this.carryingFood = false;
+    }
+
+    /**
+     *
+     * @returns {boolean}
+     */
+    isCarryingFood() {
+        return this.carryingFood;
+    }
+
+    /**
+     *
+     * @returns {number}
+     */
+    getDirection() {
+        return this.dir;
+    }
+
+    /**
+     *
+     * @returns {Number[]}
+     */
+    getCell() {
+        return [this.x, this.y];
+    }
+
+    /**
+     * 
+     * @returns {Team}
+     */
+    getTeam() {
+        return this.team;
+    }
+
+    /**
+     *
+     * @param senseDir
+     * @returns {Number[]|*[]}
+     */
+    getCellSenseDir(senseDir) {
+        switch (senseDir) {
+            case 'here': {
+                return [this.x, this.y];
+            }
+            case 'ahead': {
+                return [this.x + this.dir[0], this.y + this.dir[1]]
+            }
+            case 'leftahead': {
+                this.rotateCounterCLockwise()
+                let res = [this.x + this.dir[0], this.y + this.dir[1]]
+                this.rotateCLockwise()
+                return res
+            }
+            case 'rightahead': {
+                this.rotateCLockwise()
+                let res = [this.x + this.dir[0], this.y + this.dir[1]]
+                this.rotateCounterCLockwise()
+                return res
+            }
+        }
+    }
+
+    rotateCLockwise() {
+        this.dir = (this.dir + 1) % 6
+    }
+
+    rotateCounterCLockwise() {
+        this.dir = (this.dir + 5) % 6
+    }
+
+    /**
+     *
+     * @returns {Number[]}
+     */
+    moveForward() {
+        this.x += directions[this.dir][0];
+        this.y += directions[this.dir][1];
+        return [this.x, this.y];
+    }
 }
